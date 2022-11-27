@@ -1,0 +1,34 @@
+.landing-1>.content {
+    background-color: white;
+    justify-content: space-between;
+    margin: 50px auto !important; 
+    padding-bottom: 30px !important;
+}
+.row>.title {
+    color: var(--main-color);
+    font-weight: bold;
+    font-size: 18px;
+    height: 60px;
+    width: 100%;
+    padding-left: 50px ;
+    display: flex;
+    align-items: center;
+    box-shadow:  0px 4px 20px 0 rgba(0, 0, 0, 15%);
+}
+.default-login .mb-3 {
+    margin-top: 20px;
+}
+.landing-1 .default-login i {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+}
+.row form .btn {
+    display: flex;
+}
+.footer {
+    background-color: white !important;
+    padding: 80px 0;    
+    color: var(--primary-color) !important;   
+}
