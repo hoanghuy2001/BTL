@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (isset($_SESSION['idStudent'])) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -57,13 +67,30 @@
                                     </thead>
                                     <tbody>
                                       <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>11254366</td>
-                                        <td>Lập Trình C++</td>
-                                        <td>Nguyễn Văn A</td>
-                                        <td>9.0</td>
-                                        <td>Nắm khá vững kiến thức</td>';                                          
+                                        $output = '';
+                                        $i = 0;
+                                        // lựa chọn các kết quả của người đăng nhập mà giáo viên đã đánh giá
+                                        $sqlresult = $con->query("
+                                          SELECT result.score,result.comment, course.course_id , course.name AS course_name, staff.name AS teacher_name
+                                          FROM (result INNER JOIN course ON result.course_id = course.course_id)
+                                          INNER JOIN (
+                                            teach INNER JOIN staff ON teach.teacher_id = staff.staff_id
+                                          ) ON teach.course_id = result.course_id AND result.student_id = '{$_SESSION['idStudent']}'
+                                        ");
+                                        
+                                        if ($sqlresult->num_rows > 0) {
+                                          // output data of each row
+                                          while( $rowresult = $sqlresult->fetch_assoc()) {
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowresult['course_id'].'</td>
+                                            <td>'.$rowresult['course_name'].'</td>
+                                            <td>'.$rowresult['teacher_name'].'</td>
+                                            <td>'.$rowresult['score'].'</td>
+                                            <td>'.$rowresult['comment'].'</td>'; 
+                                          }
+                                        }                                         
                                         echo $output;
                                       ?> 
                                     </tbody>

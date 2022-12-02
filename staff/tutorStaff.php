@@ -1,3 +1,16 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+          MỤC ĐÍCH PAGE NÀY
+          SHOW TẤT CẢ CÁC GIẢNG VIÊN
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -54,16 +67,26 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Nguyễn Trọng Nhân</td>
-                                        <td>Dĩ An, Bình Dương</td>
-                                        <td>Nam</td>
-                                        <td>26/12/1987</td>
-                                        <td>Giáo Viên</td>';
+                                    <?php 
+                                      $sqltutorStaff = $con->query("SELECT * FROM teacher, staff 
+                                        WHERE teacher.teacher_id = staff.staff_id
+                                      ");
+                                      if($sqltutorStaff->num_rows > 0){
+                                        $i = 0;
+                                        $output = '';
+                                        while($rowteacherStaff = $sqltutorStaff->fetch_assoc()){
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowteacherStaff['staff_id'].'</td>
+                                            <td>'.$rowteacherStaff['name'].'</td>
+                                            <td>'.$rowteacherStaff['address'].'</td>
+                                            <td>'.$rowteacherStaff['gender'].'</td>
+                                            <td>'.$rowteacherStaff['dob'].'</td>
+                                            <td>'.$rowteacherStaff['type'].'</td>';
+                                        }
                                         echo $output;
+                                      }
                                       ?> 
                                     </tbody>
                                 </table>

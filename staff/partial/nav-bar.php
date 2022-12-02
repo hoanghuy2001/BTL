@@ -83,7 +83,7 @@
         </li>
         <li onclick="window.location.assign('./result.php');"
             <?php  
-                if($token == "myresult.php"){
+                if($token == "result.php"){
                 echo "class = \"active\"";
             }?>
         >
@@ -91,7 +91,7 @@
         </li>
         <li onclick="window.location.assign('./request.php');"
             <?php  
-                if($token == "myrequest.php"){
+                if($token == "request.php"){
                 echo "class = \"active\"";
             }?>
         >

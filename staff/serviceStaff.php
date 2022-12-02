@@ -1,3 +1,16 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+      MỤC ĐÍCH PAGE NÀY
+      SHOW TẤT CẢ CÁC NHÂN VIÊN CHĂM SÓC KHÁCH HÀNG
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -53,15 +66,25 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Nguyễn Trọng Nhân</td>
-                                        <td>Dĩ An, Bình Dương</td>
-                                        <td>Nam</td>
-                                        <td>26/12/1987</td>';
+                                    <?php 
+                                      $sqlserviceStaff = $con->query("SELECT * FROM customer_serice, staff 
+                                        WHERE customer_serice.customer_serice_id = staff.staff_id
+                                      ");
+                                      if($sqlserviceStaff->num_rows > 0){
+                                        $i = 0;
+                                        $output = '';
+                                        while($rowserviceStaff = $sqlserviceStaff->fetch_assoc()){
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowserviceStaff['staff_id'].'</td>
+                                            <td>'.$rowserviceStaff['name'].'</td>
+                                            <td>'.$rowserviceStaff['address'].'</td>
+                                            <td>'.$rowserviceStaff['gender'].'</td>
+                                            <td>'.$rowserviceStaff['dob'].'</td>';
+                                        }
                                         echo $output;
+                                      }
                                       ?> 
                                     </tbody>
                                 </table>

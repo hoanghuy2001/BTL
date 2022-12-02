@@ -1,3 +1,20 @@
+
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+    //giả sử login với 1 id là giáo viên 
+    $staffid = '5511211';
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+
+    /*
+            MỤC ĐÍCH PAGE NÀY
+            SHOW KẾT QUẢ ĐÁNH GIÁ CỦA GIÁO VIÊN ĐANG ĐĂNG NHẬP
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -61,20 +78,35 @@
                                     </thead>
                                     <tbody>
                                       <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>11254366</td>
-                                        <td>Lập Trình C++</td>
-                                        <td>111111111</td>
-                                        <td>Nguyễn Văn A</td>
-                                        <td>9.0</td>
-                                        <td>Nắm khá vững kiến thức</td>'; 
-                                        $output.= '<td style = "font-size: 18px">
-                                            <button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
-                                            <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
-                                          </td>
-                                        </tr>';                                         
-                                        echo $output;
+                                        $output = '';
+                                        $i = 0;
+                                        // lựa chọn các kết quả của người đăng nhập mà giáo viên đã đánh giá
+                                        $sqlresult = $con->query("SELECT result.score, result.comment , course.name as course_name , course.course_id, student.name as student_name, student.student_id
+                                          FROM (result INNER JOIN  course ON result.course_id = course.course_id)
+                                          INNER JOIN student ON student.student_id = result.student_id
+                                        ");
+                                        
+                                        if ($sqlresult->num_rows > 0) {
+                                          $i = 0;
+                                          $output = '';
+                                          while( $rowresult = $sqlresult->fetch_assoc()) {
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowresult['course_id'].'</td>
+                                            <td>'.$rowresult['course_name'].'</td>
+                                            <td>'.$rowresult['student_id'].'</td>
+                                            <td>'.$rowresult['student_name'].'</td>
+                                            <td>'.$rowresult['score'].'</td>
+                                            <td>'.$rowresult['comment'].'</td>'; 
+                                            $output.= '<td style = "font-size: 18px">
+                                                <button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
+                                                <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
+                                              </td>
+                                            </tr>';    
+                                          }                                     
+                                          echo $output;
+                                        }
                                       ?> 
                                     </tbody>
                                 </table>
@@ -91,7 +123,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="createRequestModalTitle">Tạo đánh giá học viên</h5>
+              <h5 class="modal-title" id="createRequestModalTitle">Tạo Kết Quả</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -132,7 +164,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header" style="background-color: #dc3545; color: white">
-              <h5 class="modal-title" id="exampleModalLabel">Xoá Yêu Cầu</h5>
+              <h5 class="modal-title" id="exampleModalLabel">Xoá Kết Quả</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -152,7 +184,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="createRequestModalTitle">Chỉnh sửa đánh giá học viên</h5>
+              <h5 class="modal-title" id="createRequestModalTitle">Chỉnh sửa kết quả học viên</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>

@@ -1,3 +1,19 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+    //giả sử login với 1 id là giáo viên 
+    if (true) {
+        $sqlstaff = $con->query("SELECT * FROM staff WHERE staff.staff_id = '5511211' ");
+        $rowstaff = $sqlstaff->fetch_assoc();
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+          MỤC ĐÍCH PAGE NÀY
+          SHOW TẤT CẢ CÁC THÔNG TIN CỦA NGƯỜI ĐANG ĐĂNG NHẬP
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -40,63 +56,30 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="inputFname">Fullname: </label>
-                    <input type="text" class="form-control" id="inputFname" readonly placeholder="Hồ Hoàng Huy">
+                    <input type="text" class="form-control" id="inputFname" readonly value="<?php echo $rowstaff['name'] ?>">
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputDoB">Date of Birth</label>
-                    <input type="date" class="form-control" id="inputDoB" placeholder="02-01-2001">
+                    <input type="date" class="form-control" id="inputDoB" value="<?php echo $rowstaff['dob'] ?>">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="inputEmail">Email</label>
-                  <input type="text" class="form-control" id="inputEmail" placeholder="hohoanghuy2001@gmail.com">
+                  <input type="text" class="form-control" id="inputEmail" value="<?php echo $rowstaff['email'] ?>">
                 </div>
                 <div class="form-row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-12">
                     <label for="inputPhone">Phone number: </label>
-                    <input type="number" class="form-control" id="inputPhone" placeholder="0385029411">
-                  </div>
-                  <div class="form-group col-md-6 gender">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                      <label class="form-check-label" for="inlineRadio1">Male</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                      <label class="form-check-label" for="inlineRadio2">Female</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                      <label class="form-check-label" for="inlineRadio3">Other</label>
-                    </div>
+                    <input type="number" class="form-control" id="inputPhone" value="<?php echo $rowstaff['phone'] ?>">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="inputPassword">Password</label>
                   <input type="password" class="form-control" id="inputPassword" placeholder="********">
                 </div>
-                <div class="form-row">
-                  <div class="form-group col-md-4">
-                    <label for="inputCity">City</label>
-                    <select id="inputState" class="form-control">
-                      <option selected>Choose...</option>
-                      <option>...</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-4">
-                    <label for="inputState">District</label>
-                    <select id="inputState" class="form-control">
-                      <option selected>Choose...</option>
-                      <option>...</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-4">
-                    <label for="inputZip">Street</label>
-                    <select id="inputState" class="form-control">
-                      <option selected>Choose...</option>
-                      <option>...</option>
-                    </select>
-                  </div>
+                <div class="form-group">
+                  <label for="inputAddress">Address</label>
+                  <input type="text" class="form-control" id="inputAddress"  value="<?php echo $rowstaff['address'] ?>" >
                 </div>
                 <button type="submit" class="btn btn-primary">CẬP NHẬT THÔNG TIN</button>
               </form>
@@ -105,8 +88,8 @@
               <div class="circle">
                 <iconify-icon icon="material-symbols:camera-enhance-rounded"></iconify-icon>
               </div>
-              <div class="line-1">Hồ Hoàng Huy</div>
-              <div class="line-2">@hohoanghuy2001</div>
+              <div class="line-1"><?php echo $rowstaff['name'] ?></div>
+              <div class="line-2"><?php echo $rowstaff['email'] ?></div>
             </div>
           </div>
         </div>

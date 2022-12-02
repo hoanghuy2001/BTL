@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (isset($_SESSION['idStudent'])) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -52,38 +62,52 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>ID</th>
                                             <th>ID Khoá học</th>
-                                            <th>Họ và Tên</th>
+                                            <th>Tên Khoá học</th>
                                             <th>Thời Gian</th>
                                             <th>Nội Dung</th>
+                                            <th>Trạng thái</th>
                                             <th>Tác vụ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                       <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Beginner</td>
-                                        <td>8 Tuần</td>
-                                        <td>26/06/2022</td>
-                                        <td>26/06/2022</td>';
-                                          
-                                          if(true){
-                                            $output.= '<td>
-                                                        <button type="button" data-toggle="modal" data-target="#deleteRequestModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
-                                                        <button type="button" data-toggle="modal" data-target="#editRequestModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
-                                                      </td>
-                                                    </tr>';
+                                        $i = 0;
+                                        $output = '';
+                                        $sqlrequest = $con->query("SELECT request.content, request.status , request.time , course.name AS course_name, course.course_id
+                                                                   FROM request, course
+                                                                   WHERE request.course_id = course.course_id AND request.student_id = '{$_SESSION['idStudent']}'");
+                                        if ($sqlrequest->num_rows > 0) {
+                                          // output data of each row
+                                          while( $rowrequest = $sqlrequest->fetch_assoc()) {
+                                            $i++;
+                                            $output = '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowrequest['course_id'].'</td>
+                                            <td>'.$rowrequest['name'].'</td>
+                                            <td>'.$rowrequest['time'].'</td>
+                                            <td>'.$rowrequest['content'].'</td>';
+                                              
+                                              if($rowrequest['state'] == 0){
+                                                $output.= '
+                                                        <td>Chưa được duyệt</td>
+                                                        <td>
+                                                            <button type="button" data-toggle="modal" data-target="#deleteRequestModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
+                                                            <button type="button" data-toggle="modal" data-target="#editRequestModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
+                                                          </td>
+                                                        </tr>';
+                                            }
+                                            else{
+                                                $output.= '<td>
+                                                            Đã được duyệt
+                                                            </td>
+                                                        </tr>';
+                                            }
+                                          }
+                                          echo $output;
                                         }
-                                        else{
-                                            $output.= '<td>
-                                                        
-                                                        </td>
-                                                    </tr>';
-                                        }
-                                        echo $output;
+                                        else {echo 'Không có yêu cầu nào';}
+            
                                       ?> 
                                     </tbody>
                                 </table>

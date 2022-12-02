@@ -1,3 +1,27 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (isset($_SESSION['idStudent'])) {
+        $sqlteacher = $con->query("SELECT name FROM teacher, staff WHERE teacher.teacher_id = staff.staff_id");
+        $sqlstudent =  $con->query("SELECT * FROM student WHERE student_id = '1239999'");
+        $rowstudent = $sqlstudent->fetch_assoc();
+        $bday = new DateTime($rowstudent['dob']); // Your date of birth
+        $today = new Datetime(date('y-m-d'));
+        $diff = $today->diff($bday);
+        if($diff->y >= 18){
+            $sqlstudentcontact = mysqli_query($con, "SELECT * FROM studentt18 WHERE student_id = '{$_SESSION['idStudent']}'");
+            $rowstudentcontact = mysqli_fetch_assoc($sqlstudentcontact);
+        }
+        else{
+            $sqlstudentcontact = mysqli_query($con, "SELECT * FROM supervisor WHERE student_id = '{$_SESSION['idStudent']}'");
+            $rowstudentcontact = mysqli_fetch_assoc($sqlstudentcontact);
+        }
+    }
+    else {
+        header('Location:../login.php');
+    }
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -40,23 +64,23 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="inputFname">Fullname: </label>
-                    <input type="text" class="form-control" id="inputFname" readonly placeholder="Hồ Hoàng Huy">
+                    <input type="text" class="form-control" id="inputFname" value="<?php echo $rowstudent['name'] ?>">
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputDoB">Date of Birth</label>
-                    <input type="date" class="form-control" id="inputDoB" placeholder="02-01-2001">
+                    <input type="date" class="form-control" id="inputDoB" value="<?php echo $rowstudent['dob'] ?>" >
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="inputEmail">Email</label>
-                  <input type="text" class="form-control" id="inputEmail" placeholder="hohoanghuy2001@gmail.com">
+                  <input type="text" class="form-control" id="inputEmail" value="<?php echo $rowstudentcontact['email'] ?>">
                 </div>
                 <div class="form-row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-12">
                     <label for="inputPhone">Phone number: </label>
-                    <input type="number" class="form-control" id="inputPhone" placeholder="0385029411">
+                    <input type="number" class="form-control" id="inputPhone" value="<?php echo $rowstudentcontact['phone'] ?>">
                   </div>
-                  <div class="form-group col-md-6 gender">
+                  <!-- <div class="form-group col-md-6 gender">
                     <div class="form-check form-check-inline">
                       <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
                       <label class="form-check-label" for="inlineRadio1">Male</label>
@@ -69,50 +93,33 @@
                       <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
                       <label class="form-check-label" for="inlineRadio3">Other</label>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="form-group">
                   <label for="inputPassword">Password</label>
                   <input type="password" class="form-control" id="inputPassword" placeholder="********">
                 </div>
-                <div class="form-row">
-                  <div class="form-group col-md-4">
-                    <label for="inputCity">City</label>
-                    <select id="inputState" class="form-control">
-                      <option selected>Choose...</option>
-                      <option>...</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-4">
-                    <label for="inputState">District</label>
-                    <select id="inputState" class="form-control">
-                      <option selected>Choose...</option>
-                      <option>...</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-md-4">
-                    <label for="inputZip">Street</label>
-                    <select id="inputState" class="form-control">
-                      <option selected>Choose...</option>
-                      <option>...</option>
-                    </select>
-                  </div>
+                <div class="form-group">
+                  <label for="inputAddress">Address</label>
+                  <input type="text" class="form-control" id="inputAddress"  value="<?php echo $rowstudent['address'] ?>" >
                 </div>
-                <button type="submit" class="btn btn-primary">CẬP NHẬT THÔNG TIN</button>
+                <button type="submit" id = "liveToastBtn" name ="submit" class="btn btn-primary">CẬP NHẬT THÔNG TIN</button>
               </form>
             </div>
             <div class="col-3 avatar-column">
               <div class="circle">
                 <iconify-icon icon="material-symbols:camera-enhance-rounded"></iconify-icon>
               </div>
-              <div class="line-1">Hồ Hoàng Huy</div>
-              <div class="line-2">@hohoanghuy2001</div>
+              <div class="line-1"><?php echo $rowstudent['name'] ?></div>
+              <div class="line-2"><?php echo $rowstudentcontact['email'] ?></div>
             </div>
           </div>
         </div>
       </div>
 
     </div>
+
+    <!--TOASTER-->
     <?php require "../partial/footer.php"?>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

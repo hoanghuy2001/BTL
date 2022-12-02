@@ -1,3 +1,17 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+      MỤC ĐÍCH PAGE NÀY
+      SHOW TẤT CẢ CÁC HỌC VIÊN
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -48,28 +62,32 @@
                                             <th>ID</th>
                                             <th>Họ và Tên</th>
                                             <th>Địa Chỉ</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Giới Tính</th>
                                             <th>Ngày Sinh</th>
-                                            <th>Tác Vụ </th>
+                                            <th>Tuổi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                       <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Nguyễn Trọng Nhân</td> 
-                                        <td>Dĩ An, Bình Dương</td>
-                                        <td>086860239</td>
-                                        <td>Nam</td>
-                                        <td>26/12/1987</td>
-                                        <td style = "font-size: 18px">
-                                          <button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
-                                          <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
-                                        </td>
-                                                    </tr>
-                                        ';
+                                        $sqlstudent =  $con->query("SELECT * FROM student ");
+                                        if($sqlstudent->num_rows > 0) {
+                                          $output = '';
+                                          $i = 0;
+                                          while($rowstudent = $sqlstudent->fetch_assoc()) {
+                                            $i++;
+                                            $output .= '<tr> 
+                                              <td>'.$i.'</td>
+                                              <td>'.$rowstudent['student_id'].'</td>
+                                              <td>'.$rowstudent['name'].'</td> 
+                                              <td>'.$rowstudent['address'].'</td>
+                                              <td>'.$rowstudent['dob'].'</td>
+                                              <td style = "font-size: 18px">
+                                                <button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
+                                                <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
+                                              </td>
+                                              </tr>
+                                              ';
+                                          }
+                                        }
                                         echo $output;
                                       ?> 
                                     </tbody>

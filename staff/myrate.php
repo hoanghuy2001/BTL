@@ -1,3 +1,17 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+      MỤC ĐÍCH PAGE NÀY
+      SHOW TẤT CẢ CÁC ĐÁNH GIÁ CỦA HỌC VIÊN VỀ CÁC KHOÁ HỌC
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -41,48 +55,57 @@
                     <div class="col-sm-12">
                         <div class="white-box">
                           <div class="title row">
-                            <h3 class="box-title">Đánh Giá</h3>                          
-                            <button type="button" class="btn btn-success">
-                              <iconify-icon icon="material-symbols:add-box"></iconify-icon>Tạo đánh giá
-                            </button>
+                            <h3 class="box-title">Đánh Giá</h3>                         
                           </div>
                             <div class="table-responsive">
                                 <table class="table text-nowrap">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>ID</th>
                                             <th>ID Khoá học</th>
-                                            <th>Họ và Tên</th>
-                                            <th>Thời Gian</th>
+                                            <th>Tên khoá học</th>
+                                            <th>Học viên</th>
+                                            <th>Thời Gian Yêu Cầu</th>
                                             <th>Nội Dung</th>
                                             <th>Tác vụ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                       <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Beginner</td>
-                                        <td>8 Tuần</td>
-                                        <td>26/06/2022</td>
-                                        <td>26/06/2022</td>';
-                                          
-                                          if(true){
-                                            $output.= '<td>
-                                                        <button type="button" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
-                                                        <button type="button" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
-                                                      </td>
-                                                    </tr>';
+                                        $i = 0;
+                                        $output = '';
+                                        $sqlrate = $con->query("SELECT review.content, course.name AS course_name, course.course_id, student.name AS student_name
+                                        FROM (review INNER JOIN course ON review.course_id = course.course_id)
+                                        INNER JOIN student ON review.student_id = student.student_id
+                                        ");
+                                        if ($sqlrate->num_rows > 0) {
+                                          // output data of each row
+                                          while($rowrate = $sqlrate->fetch_assoc()) {
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowrate['course_id'].'</td>
+                                            <td>'.$rowrate['course_name'].'</td>
+                                            <td>'.$rowrate['student_name'].'</td>
+                                            <td>Chưa có</td>
+                                            <td>'.$rowrate['content'].'</td>
+                                            ';
+                                              if(true){
+                                                $output.= '<td>
+                                                            <button type="button" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
+                                                          </td>
+                                                        </tr>';
+                                            }
+                                            else{
+                                                $output.= '<td>
+                                                            
+                                                            </td>
+                                                        </tr>';
+                                            }
+                                          }
+                                          echo $output;
                                         }
-                                        else{
-                                            $output.= '<td>
-                                                        
-                                                        </td>
-                                                    </tr>';
-                                        }
-                                        echo $output;
+                                        
                                       ?> 
                                     </tbody>
                                 </table>

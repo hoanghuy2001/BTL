@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (isset($_SESSION['idStudent'])) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -57,27 +67,49 @@
                                     </thead>
                                     <tbody>
                                       <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Beginner</td>
-                                        <td>8 Tuần</td>
-                                        <td>26/06/2022</td>
-                                        <td>18:30</td>
-                                        <td>Thứ 2, Thứ 3</td>';
-                                          
-                                          if(false){
-                                            $output.= '<td>
-                                                        <button type="button" data-toggle="modal" data-target="#deleteCourseModal" class="btn btn-danger deletecourse" style="color: #fff; 
-                                                        padding-right:18px;">Hủy Khóa Học</button>
-                                                        </td>
-                                                    </tr>';
-                                        }
-                                        else{
-                                            $output.= '<td>
-                                                        <button type="button" data-toggle="modal" data-target="#createModal" class="btn btn-success" style="color: #fff;">Đánh Giá</button>
-                                                        </td>
-                                                    </tr>';
+                                        $output = '';
+                                        $sqlcourse =  $con->query("SELECT * FROM course 
+                                        INNER JOIN(
+                                          SELECT course_id 
+                                            FROM study
+                                            INNER JOIN(
+                                                SELECT student_id
+                                                FROM student    
+                                            WHERE student_id = '{$_SESSION['idStudent']}'
+                                            ) AS temp1
+                                            on temp1.student_id = study.student_id
+                                        ) AS temp2
+                                        ON temp2.course_id = course.course_id
+                                      ");
+
+                                        $i = 0;
+                                        if ($sqlcourse->num_rows > 0) {
+                                          // output data of each row
+                                          while( $rowcourse = $sqlcourse->fetch_assoc()) {
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowcourse['course_id'].'</td>
+                                            <td>'.$rowcourse['level'].'</td>
+                                            <td>'.$rowcourse['length'].'</td>
+                                            <td>'.$rowcourse['start_date'].'</td>
+                                            <td>'.$rowcourse['time'].'</td>
+                                            <td>'.$rowcourse['course_id'].'</td>';
+                                              
+                                            if(false){
+                                                $output.= '<td>
+                                                            <button type="button" data-toggle="modal" data-target="#deleteCourseModal" class="btn btn-danger deletecourse" style="color: #fff; 
+                                                            padding-right:18px;">Hủy Khóa Học</button>
+                                                            </td>
+                                                        </tr>';
+                                            }
+                                            else{
+                                                $output.= '<td>
+                                                            <button type="button" data-toggle="modal" data-target="#createModal" class="btn btn-success" style="color: #fff;">Đánh Giá</button>
+                                                            </td>
+                                                        </tr>';
+                                            }
+                                          }
                                         }
                                         echo $output;
                                       ?> 

@@ -73,5 +73,3 @@
         </li>
     </ul>
 </div>
-<script src="./js/navbar.js"> 
-</script>

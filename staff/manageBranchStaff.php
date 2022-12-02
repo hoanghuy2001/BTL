@@ -1,3 +1,17 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+    $temp_manager_id = '6611311';
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+          MỤC ĐÍCH PAGE NÀY
+          SHOW TẤT CẢ CÁC NHÂN VIÊN QUẢN LÝ CHI NHÁNH, VÀ TẤT CẢ CÁC NHÂN VIÊN CÓ TRONG CHI NHÁNH HIỆN TẠI
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -39,7 +53,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="white-box">
-                            <h3 class="box-title">Thông Tin Nhân Viên</h3>
+                            <h3 class="box-title">Thông Tin Nhân Viên Quản Lí</h3>
                             <div class="table-responsive">
                                 <table class="table text-nowrap">
                                     <thead>
@@ -54,16 +68,90 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                       <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Nguyễn Trọng Nhân</td>
-                                        <td>Dĩ An, Bình Dương</td>
-                                        <td>Nam</td>
-                                        <td>26/12/1987</td>
-                                        <td>Dĩ An, Bình Dương</td>';
+                                      $sqlmanage_branch = $con->query("SELECT * FROM manager, staff 
+                                        WHERE staff.staff_id = manager.manager_id AND manager.dept = 'Quản lí chi nhánh'
+                                      ");
+                                      if($sqlmanage_branch->num_rows > 0){
+                                        $i = 0;
+                                        $output = '';
+                                        while($rowmanage_branch = $sqlmanage_branch->fetch_assoc()){
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowmanage_branch['manager_id'].'</td>
+                                            <td>'.$rowmanage_branch['name'].'</td>
+                                            <td>'.$rowmanage_branch['address'].'</td>
+                                            <td>'.$rowmanage_branch['gender'].'</td>
+                                            <td>'.$rowmanage_branch['dob'].'</td>
+                                            <td>'.$rowmanage_branch['address'].'</td>';
+                                        }
                                         echo $output;
+                                      }
+                                      ?> 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 30px;">
+                    <div class="col-sm-12">
+                        <div class="white-box">
+                            <h3 class="box-title">Thông Tin Nhân Viên Khu Vực <?php 
+                                //Lấy branch_id, địa chỉ của người quản lí đặt tạm thời là 6611311 
+                                $sqlbranchis_managed = $con->query("SELECT * FROM branch WHERE manager_id = '{$temp_manager_id}'");
+                                $rowbranchis_managed = $sqlbranchis_managed->fetch_assoc();
+                                echo $rowbranchis_managed['address'];
+                            ?></h3>
+                            <div class="table-responsive">
+                                <table class="table text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>ID</th>
+                                            <th>Họ và Tên</th>
+                                            <th>Địa Chỉ</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Email</th>
+                                            <th>Giới Tính</th>
+                                            <th>Ngày Sinh</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      <?php 
+                                      $sqlstaffin_branch = $con->query("SELECT * FROM staff 
+                                        INNER JOIN(
+                                          SELECT branch_id
+                                          FROM branch
+                                          INNER JOIN(
+                                            SELECT * 
+                                            FROM manager
+                                            WHERE manager_id = '{$temp_manager_id}'
+                                          ) AS temp1
+                                          ON temp1.manager_id = branch.manager_id
+                                        ) AS temp2
+                                        ON temp2.branch_id = staff.branch_id;
+                                      ");
+                                      if($sqlstaffin_branch->num_rows > 0){
+                                        $i = 0;
+                                        $output = '';
+                                        while($rowstaffin_branch = $sqlstaffin_branch->fetch_assoc()){
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowstaffin_branch['staff_id'].'</td>
+                                            <td>'.$rowstaffin_branch['name'].'</td>
+                                            <td>'.$rowstaffin_branch['address'].'</td>
+                                            <td>'.$rowstaffin_branch['phone'].'</td>
+                                            <td>'.$rowstaffin_branch['email'].'</td>
+                                            <td>'.$rowstaffin_branch['gender'].'</td>
+                                            <td>'.$rowstaffin_branch['dob'].'</td>';
+                                        }
+                                        echo $output;
+                                      }
                                       ?> 
                                     </tbody>
                                 </table>

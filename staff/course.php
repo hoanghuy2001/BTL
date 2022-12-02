@@ -1,3 +1,17 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+          MỤC ĐÍCH PAGE NÀY
+          SHOW TẤT CẢ CÁC KHOÁ HỌC HIỆN CÓ TRONG HỆ THỐNG
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -33,14 +47,20 @@
         <div class="col-9">
           <div class="link row">
               <div class="text">Khoá học của tôi</div>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">Thêm khoá học</button>
+
           </div>
           <div class="wrapper-content row">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="white-box">
-                            <h3 class="box-title">Khóa Học</h3>
+                          <div class="title row">
+                            <h3 class="box-title">Yêu Cầu</h3>
+                            <!-- Button trigger modal -->                          
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createModal">
+                              <iconify-icon icon="material-symbols:add-box"></iconify-icon>Tạo yêu cầu
+                            </button>
+                          </div>
                             <div class="table-responsive">
                                 <table class="table text-nowrap">
                                     <thead>
@@ -57,21 +77,38 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Lập trình nâng cao</td>
-                                        <td>Beginner</td>
-                                        <td>8 Tuần</td>
-                                        <td>26/06/2022</td>
-                                        <td>18:30</td>
-                                        <td>Thứ 2, Thứ 3</td>';
-                                        $output.= '<td>
-                                        <button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
-                                        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
-                                                </tr>';
-                                        
+                                    <?php 
+                                        $output = '';
+                                        $sqlcourse =  $con->query("SELECT * FROM course 
+                                          INNER JOIN(
+                                            SELECT * FROM schedule
+                                          ) AS temp
+                                          ON temp.course_id = course.course_id
+                                        ");
+                                        $i = 0;
+                                        if ($sqlcourse->num_rows > 0) {
+                                          // output data of each row
+                                          while( $rowcourse = $sqlcourse->fetch_assoc()) {
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowcourse['course_id'].'</td>
+                                            <td>'.$rowcourse['name'].'</td>
+                                            <td>'.$rowcourse['level'].'</td>
+                                            <td>'.$rowcourse['length'].'</td>
+                                            <td>'.$rowcourse['start_date'].'</td>
+                                            <td>'.$rowcourse['time'].'</td>
+                                            <td>'.$rowcourse['class_date'].'</td>';
+                                             //khoá học kết thúc chưa nếu chưa thì có quyền huỷ khoá học nếu rồi thì được quyền đánh giá
+                                            if(true){
+                                                $output.= '<td>
+                                                              <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
+                                                              <button type="button" data-toggle="modal" data-target="#editModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
+                                                            </td>
+                                                        </tr>';
+                                            }
+                                          }
+                                        }
                                         echo $output;
                                       ?> 
                                     </tbody>
@@ -110,7 +147,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="createRequestModalTitle">Chỉnh sửa thông tin khoá học</h5>
+              <h5 class="modal-title" id="createRequestModalTitle">Tạo mới khoá học</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>

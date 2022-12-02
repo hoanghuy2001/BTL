@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+
+    if (isset($_SESSION['idStudent'])) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -48,29 +58,49 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>ID</th>
                                             <th>ID Khoá học</th>
-                                            <th>Họ và Tên</th>
+                                            <th>Tên khoá học</th>
                                             <th>Thời Gian</th>
                                             <th>Nội Dung</th>
                                             <th>Tác vụ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Beginner</td>
-                                        <td>8 Tuần</td>
-                                        <td>26/06/2022</td>
-                                        <td>26/06/2022</td>';
-                                        $output.= '<td>
-                                                    <button data-toggle="modal" data-target="#deleteRequestModal" type="button" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
-                                                    <button data-toggle="modal" data-target="#editRequestModal" type="button" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
-                                                  </td>
-                                                </tr>';
-                                        echo $output;
+                                    <?php 
+                                        $i = 0;
+                                        $output = '';
+                                        $sqlrate = $con->query(" SELECT review.content, review.time , course.name , course.course_id
+                                        FROM review, course
+                                        WHERE review.course_id = course.course_id AND review.student_id = '1239999'
+                                        ");
+                                        if ($sqlrate->num_rows > 0) {
+                                          // output data of each row
+                                          while( $rowrate = $sqlrate->fetch_assoc()) {
+                                            $i++;
+                                            $output = '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowrate['course_id'].'</td>
+                                            <td>'.$rowrate['name'].'</td>
+                                            <td>'.$rowrate['time'].'</td>
+                                            <td>'.$rowrate['content'].'</td>';
+                                              
+                                              if($rowrate['state'] == 0){
+                                                $output.= '<td>
+                                                            <button type="button" data-toggle="modal" data-target="#deleteRequestModal" class="btn btn-danger deletecourse" style="color: #fff"><iconify-icon icon="mdi:trash"></iconify-icon></button>
+                                                            <button type="button" data-toggle="modal" data-target="#editRequestModal" class="btn btn-success"><iconify-icon icon="material-symbols:edit"></iconify-icon></button>
+                                                          </td>
+                                                        </tr>';
+                                            }
+                                            else{
+                                                $output.= '<td>
+                                                            
+                                                            </td>
+                                                        </tr>';
+                                            }
+                                          }
+                                          echo $output;
+                                        }
+                                        else echo 'Không có đánh giá nào';
                                       ?> 
                                     </tbody>
                                 </table>

@@ -1,3 +1,16 @@
+<?php
+    session_start();
+    include('../config/ketnoi.php');
+    if (true) {
+    }
+    else {
+        header('Location:../login.php');
+    }
+    /*
+          MỤC ĐÍCH PAGE NÀY
+          SHOW TẤT CẢ CÁC NHÂN VIÊN QUẢN LÝ KHOÁ HỌC
+    */
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -39,7 +52,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="white-box">
-                            <h3 class="box-title">Thông Tin Nhân Viên</h3>
+                            <h3 class="box-title">Thông Tin Nhân Viên Quản Lí Khoá Học</h3>
                             <div class="table-responsive">
                                 <table class="table text-nowrap">
                                     <thead>
@@ -50,18 +63,30 @@
                                             <th>Địa Chỉ</th>
                                             <th>Giới Tính</th>
                                             <th>Ngày Sinh</th>
+                                            <th>Địa chỉ </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      <?php 
-                                        $output = '<tr> 
-                                        <td>1</td>
-                                        <td>1913505</td>
-                                        <td>Nguyễn Trọng Nhân</td>
-                                        <td>Dĩ An, Bình Dương</td>
-                                        <td>Nam</td>
-                                        <td>26/12/1987</td>';
+                                    <?php 
+                                      $sqlmanage_branch = $con->query("SELECT * FROM manager, staff 
+                                        WHERE staff.staff_id = manager.manager_id AND manager.dept = 'Quản lí khoá học'
+                                      ");
+                                      if($sqlmanage_branch->num_rows > 0){
+                                        $i = 0;
+                                        $output = '';
+                                        while($rowmanage_branch = $sqlmanage_branch->fetch_assoc()){
+                                            $i++;
+                                            $output .= '<tr> 
+                                            <td>'.$i.'</td>
+                                            <td>'.$rowmanage_branch['manager_id'].'</td>
+                                            <td>'.$rowmanage_branch['name'].'</td>
+                                            <td>'.$rowmanage_branch['address'].'</td>
+                                            <td>'.$rowmanage_branch['gender'].'</td>
+                                            <td>'.$rowmanage_branch['dob'].'</td>
+                                            <td>'.$rowmanage_branch['address'].'</td>';
+                                        }
                                         echo $output;
+                                      }
                                       ?> 
                                     </tbody>
                                 </table>
